@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chatbot</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 760px; margin: 24px auto; padding:0 12px; }
+    #chatbox { border:1px solid #ccc; padding:12px; height:440px; overflow-y:auto; }
+    .user { color:#1e88e5; margin:6px 0; }
+    .bot { color:#2e7d32; margin:6px 0; }
+    input { width:78%; padding:8px; }
+    button { padding:8px 14px; }
+  </style>
+</head>
+<body>
+  <h1>Hugging Face Chatbot</h1>
+  <div id="chatbox"></div>
+  <input type="text" id="message" placeholder="Type a message..." />
+  <button onclick="sendMessage()">Send</button>
+  <script>
+    async function sendMessage(){
+      const input = document.getElementById('message');
+      const chatbox = document.getElementById('chatbox');
+      const userMsg = input.value.trim();
+      if(!userMsg) return;
+      chatbox.innerHTML += `<div class='user'><b>You:</b> ${userMsg}</div>`;
+      input.value='';
+      chatbox.scrollTop = chatbox.scrollHeight;
+      try{
+        const res = await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:userMsg})});
+        const data = await res.json();
+        if(!res.ok) throw new Error(data.error||'error');
+        chatbox.innerHTML += `<div class='bot'><b>Bot:</b> ${data.reply}</div>`;
+      }catch(err){
+        chatbox.innerHTML += `<div class='bot'><b>Bot:</b> Error: ${err.message}</div>`;
+      }finally{ chatbox.scrollTop = chatbox.scrollHeight; }
+    }
+  </script>
+</body>
+</html>
