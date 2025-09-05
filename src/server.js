@@ -1,6 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
+const cors = require('cors');
 const { chatCompletion, getClientInfo } = require('./hfClient');
 
 dotenv.config();
@@ -9,6 +10,15 @@ const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    process.env.FRONTEND_ORIGIN || ''
+  ].filter(Boolean),
+  methods: ['GET','POST'],
+  allowedHeaders: ['Content-Type']
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Health & config
