@@ -164,8 +164,8 @@ async function chatWithHistory(userMessages, options = {}) {
 	} catch (err) {
 		if (err.response) {
 			const status = err.response.status;
-			if (status === 403) err.message = '403 Forbidden: token tidak punya izin ke model/Inference. Cek scope token atau ganti model.';
-			else if (status === 404) err.message = '404 Not Found: nama model salah atau belum tersedia di router.';
+			if (status === 403) err.message = '403 Forbidden';
+			else if (status === 404) err.message = '404 Not Found';
 		}
 		throw err;
 	}
